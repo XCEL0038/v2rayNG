@@ -67,7 +67,7 @@ fun SkyWelcomeGate(isDark: Boolean) {
             SkyWelcomePhase.Intro -> SkyWelcomeIntro(
                 palette = palette,
                 name = name.trim(),
-                onFinished = { SkyAppState.setWelcomeName(name.trim()) }
+                onFinished = { SkyAppState.updateWelcomeName(name.trim()) }
             )
         }
     }
