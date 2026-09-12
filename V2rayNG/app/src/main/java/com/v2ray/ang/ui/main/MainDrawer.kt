@@ -61,7 +61,11 @@ private val drawerItems = primaryDrawerItems + listOf(
 )
 
 @Composable
-fun MainDrawerContent(drawerState: DrawerState, onNavigate: (MainDestination) -> Unit) {
+fun MainDrawerContent(
+    drawerState: DrawerState,
+    onNavigate: (MainDestination) -> Unit,
+    onExitAdvanced: (() -> Unit)? = null,
+) {
     val drawerScrollState = rememberScrollState()
 
     ModalDrawerSheet(
@@ -74,6 +78,16 @@ fun MainDrawerContent(drawerState: DrawerState, onNavigate: (MainDestination) ->
                 .verticalScroll(drawerScrollState)
                 .verticalScrollbar(drawerScrollState)
         ) {
+            if (onExitAdvanced != null) {
+                NavigationDrawerItem(
+                    label = { Text("← Назад в SkyVPN") },
+                    selected = false,
+                    onClick = onExitAdvanced,
+                    icon = { Icon(painterResource(R.drawable.ic_arrow_back_24dp), contentDescription = null) },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                AppDivider()
+            }
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
