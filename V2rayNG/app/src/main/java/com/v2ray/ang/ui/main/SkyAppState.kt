@@ -54,7 +54,7 @@ object SkyAppState {
         "SKYVPN30" to ("premium" to 30),
     )
 
-    fun setWelcomeName(name: String) {
+    fun updateWelcomeName(name: String) {
         welcomeName = name
         MmkvManager.encodeSettings(KEY_WELCOME_NAME, name)
     }
