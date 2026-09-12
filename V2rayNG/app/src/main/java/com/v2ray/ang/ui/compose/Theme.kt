@@ -132,8 +132,12 @@ val toastIconCircleBg = Color(0x33FFFFFF) // Semi-transparent White
 val toastTextColor = Color.White // White
 
 object ThemeManager {
+    // SkyVPN defaults to the dark lime/black brand theme regardless of the phone's system
+    // theme (mode "2" = force dark), matching the reference web mockup. A user can still
+    // switch to light from the in-app settings popover (mode "1"); "0" would follow the
+    // system theme, which is what v2rayNG did upstream.
     private val _themeMode = MutableStateFlow(
-        MmkvManager.decodeSettingsString(AppConfig.PREF_UI_MODE_NIGHT, "0") ?: "0"
+        MmkvManager.decodeSettingsString(AppConfig.PREF_UI_MODE_NIGHT, "2") ?: "2"
     )
     val themeMode: StateFlow<String> = _themeMode.asStateFlow()
 
@@ -217,4 +221,57 @@ fun AppTheme(
             }
         }
     }
+}
+
+/**
+ * SkyVPN: raw design tokens for the customer-facing screens (home, tariffs, profile),
+ * ported directly from the reference web mockup's CSS custom properties. These are used
+ * as plain colors rather than routed through Material3's ColorScheme roles, because the
+ * mockup's "glass" translucent surfaces don't map cleanly onto Material3 semantics.
+ */
+data class SkyPalette(
+    val bg: Color,
+    val glass: Color,
+    val glassStrong: Color,
+    val glassBorder: Color,
+    val lime: Color,
+    val limeDim: Color,
+    val limeSoft: Color,
+    val text: Color,
+    val text2: Color,
+    val text3: Color,
+    val btnIdle1: Color,
+    val btnIdle2: Color,
+)
+
+fun skyPalette(isDark: Boolean): SkyPalette = if (isDark) {
+    SkyPalette(
+        bg = skyBgDark,
+        glass = Color(0x0DFFFFFF),
+        glassStrong = Color(0x14FFFFFF),
+        glassBorder = Color(0x29C6FF2E),
+        lime = skyLime,
+        limeDim = skyLimeDim,
+        limeSoft = skyLimeSoft,
+        text = skyTextDark,
+        text2 = skyTextDark.copy(alpha = 0.62f),
+        text3 = skyTextDark.copy(alpha = 0.32f),
+        btnIdle1 = skyBtnIdle1,
+        btnIdle2 = skyBtnIdle2,
+    )
+} else {
+    SkyPalette(
+        bg = skyBgLight,
+        glass = Color(0x09000000),
+        glassStrong = Color(0x0F000000),
+        glassBorder = Color(0x38789A0A),
+        lime = skyLime,
+        limeDim = skyLimeDim,
+        limeSoft = skyLimeSoft,
+        text = skyTextLight,
+        text2 = skyTextLight.copy(alpha = 0.62f),
+        text3 = skyTextLight.copy(alpha = 0.36f),
+        btnIdle1 = Color(0xFFFFFFFF),
+        btnIdle2 = Color(0xFFE4E8D8),
+    )
 }
