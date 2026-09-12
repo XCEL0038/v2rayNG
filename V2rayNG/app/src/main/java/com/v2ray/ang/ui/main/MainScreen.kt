@@ -39,6 +39,22 @@ fun MainScreen(
     onAction: (MainAction) -> Unit,
     onNavigate: (MainDestination) -> Unit,
 ) {
+    // SkyVPN: the customer-facing home (hero card + mode list + tariffs/profile) is the
+    // default surface. The original v2rayNG technical UI (server list, subscriptions,
+    // per-app proxy, routing, etc.) is still fully intact below - it's just reached via
+    // the Profile screen's "Расширенные настройки" link instead of being the first thing
+    // a user sees, since end users are only meant to pick one of the two fixed modes.
+    var showAdvanced by remember { mutableStateOf(false) }
+    if (!showAdvanced) {
+        SkyMainRoot(
+            mainViewModel = mainViewModel,
+            onAction = onAction,
+            isDark = LocalDarkTheme.current,
+            onOpenAdvanced = { showAdvanced = true },
+        )
+        return
+    }
+
     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val groups = uiState.groups
     val isLoading by mainViewModel.isLoading.collectAsStateWithLifecycle()
@@ -135,6 +151,10 @@ fun MainScreen(
         drawerContent = {
             MainDrawerContent(
                 drawerState = drawerState,
+                onExitAdvanced = {
+                    scope.launch { drawerState.close() }
+                    showAdvanced = false
+                },
                 onNavigate = { route ->
                     scope.launch { drawerState.close() }
                     onNavigate(route)
